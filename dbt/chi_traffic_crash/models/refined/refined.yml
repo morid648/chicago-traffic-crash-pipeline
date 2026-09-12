@@ -1,0 +1,85 @@
+version: 2
+
+models:
+  - name: refined_dim_datetime
+    columns:
+      - name: crash_datetime
+        tests:
+          - not_null
+          - unique
+
+      - name: year
+        tests:
+          - not_null
+
+      - name: month
+        tests:
+          - not_null
+
+      - name: day
+        tests:
+          - not_null
+
+      - name: quarter
+        tests:
+          - not_null
+
+      - name: week
+        tests:
+          - not_null
+
+      - name: day_of_week
+        tests:
+          - not_null
+
+      - name: is_weekend
+        tests:
+          - not_null
+
+      - name: is_winter
+        tests:
+          - not_null
+  - name: refined_dim_location
+    columns:
+      - name: location_hkey
+        tests:
+          - unique
+          - not_null
+  - name: refined_ward
+    columns:
+      - name: ward_hkey
+        tests:
+          - unique
+          - not_null
+  - name: refined_neighborhood
+    columns:
+      - name: neighborhood_hkey
+        tests:
+          - unique
+          - not_null
+
+  - name: refined_dim_location_enriched
+    columns:
+      - name: location_hkey
+        tests:
+          - unique
+          - not_null
+  - name: refined_fact_crash
+    columns:
+      - name: crash_hkey
+        tests:
+          - unique
+          - not_null
+  - name: refined_fact_people
+    columns:
+      - name: person_hkey
+        tests:
+          - unique
+          - not_null
+
+  - name: refined_fact_vehicle
+    columns:
+      - name: vehicle_hkey
+        tests:
+          - unique
+          - not_null

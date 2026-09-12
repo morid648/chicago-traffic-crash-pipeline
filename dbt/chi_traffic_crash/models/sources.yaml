@@ -1,0 +1,61 @@
+version: 2
+
+sources:
+  - name: staging
+    database: <your-gcp-project-id>
+    schema: raw_data
+
+    tables:
+      - name: crash
+        columns:
+          - name: crash_record_id
+            tests:
+              - not_null
+              - unique_id_partition
+      - name: people
+        columns:
+          - name: person_id
+            tests:
+              - not_null
+              - unique_id_partition
+          - name: crash_record_id
+            tests:
+              - not_null
+              - relationships:
+                  to: ref('crash')
+                  field: crash_record_id
+          - name: vehicle_id
+            tests:
+              - relationships:
+                  to: ref('vehicle')
+                  field: vehicle_id
+
+      - name: vehicle
+        columns:
+          - name: crash_unit_id
+            tests:
+              - not_null
+              - unique_id_partition
+          - name: crash_record_id
+            tests:
+              - not_null
+
+      - name: ward
+        columns:
+          - name: ward_id
+            tests:
+              - not_null
+              - unique_id_partition
+          - name: geometry
+            tests:
+              - not_null
+
+      - name: neighborhood
+        columns:
+          - name: pri_neigh
+            tests:
+              - not_null
+              - unique_id_partition
+          - name: geometry
+            tests:
+              - not_null

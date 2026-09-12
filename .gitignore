@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment / secrets
+.env
+*.json
+*.pem
+*.key
+keys/
+secrets/
+
+# Terraform
+terraform_infra/.terraform/
+terraform_infra/terraform.tfstate
+terraform_infra/terraform.tfstate.backup
+terraform_infra/.terraform.lock.hcl
+
+# dbt
+dbt/chi_traffic_crash/target/
+dbt/chi_traffic_crash/dbt_packages/
+dbt/chi_traffic_crash/logs/
+dbt/.user.yml
+
+# Logs
+logs/
+*.log
+
+# Airflow
+airflow/logs/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Tableau secrets (never commit service account keys)
+tableau/secrets/
