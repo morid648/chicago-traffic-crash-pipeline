@@ -21,8 +21,6 @@ TABLES = {
     "vehicle": "traffic_data/vehicle/chi_traffic_vehicle_{{ds_nodash}}.parquet",
 }
 
-default_args = {"owner": "morid648", "depends_on_past": False, "retries": 1}
-
 with DAG(
     "chi_traffic_03_load_traffic_gcs_to_bigquery",
     default_args=default_args,
