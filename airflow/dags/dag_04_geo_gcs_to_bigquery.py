@@ -1,9 +1,3 @@
-import os
-import subprocess
-import logging
-import pathlib
-import datetime as dt
-
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
@@ -17,9 +11,6 @@ from airflow.providers.google.cloud.transfers.gcs_to_local import (
 from airflow.providers.google.cloud.transfers.local_to_gcs import (
     LocalFilesystemToGCSOperator,
 )
-from airflow.operators.dummy import DummyOperator
-
-from google.cloud import storage
 
 # GCS Variables
 BUCKET = "chi-traffic-de-bucket"
@@ -36,18 +27,6 @@ default_args = {"owner": "morid648", "depends_on_past": False, "retries": 1}
 partition_date = "{{ds_nodash}}"
 
 
-def process_geojson(local_file_path, **kwargs):
-    input_path = pathlib.Path(local_file_path)
-    output_path = input_path.with_suffix(".geojsonl")
-
-    with open(output_path, "w") as outfile:
-        subprocess.run(
-            ["jq", "-c", ".features[]", str(input_path)],
-            stdout=outfile,
-            check=True,
-        )
-
-
 with DAG(
     "chi_traffic_04_load_geo_gcs_to_bigquery",
     default_args=default_args,
@@ -56,8 +35,6 @@ with DAG(
     start_date=days_ago(1),
     catchup=False,
 ) as dag:
-
-    wait_for_fetch_dag = DummyOperator(task_id="wait_for_fetch_to_GCS_dag")
 
     for dataset_name, bq_table in GEOJSON_TABLES.items():
         gcs_file_path = (
@@ -128,8 +105,7 @@ with DAG(
         )
 
         (
-            wait_for_fetch_dag
-            >> download_from_gcs
+            download_from_gcs
             >> process_geojson_data
             >> upload_data
             >> load_geojson_data_to_bq

@@ -1,8 +1,5 @@
 import os
-import logging
-import json
 import requests
-import datetime as dt
 import pyarrow.parquet as pq
 import pyarrow.csv as csv
 import pyarrow as pa
@@ -15,7 +12,6 @@ from airflow.providers.google.cloud.transfers.local_to_gcs import (
     LocalFilesystemToGCSOperator,
 )
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
-from google.cloud import storage
 
 # GCS Variables
 BUCKET = "chi-traffic-de-bucket"
@@ -70,7 +66,6 @@ with DAG(
         fetch_data = PythonOperator(
             task_id=f"fetch_dataset_{dataset_name}",
             python_callable=fetch_dataset,
-            provide_context=True,
             op_kwargs={
                 "api_url": api_url,
                 "tmp_file_name": f"chi_traffic_{dataset_name}_{EXECUTION_DATE}",

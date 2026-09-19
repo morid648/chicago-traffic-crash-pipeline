@@ -1,6 +1,4 @@
 import os
-import logging
-import datetime as dt
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -9,11 +7,7 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import (
     GCSToBigQueryOperator,
 )
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
-from airflow.operators.dummy import DummyOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
-
-
-from google.cloud import storage
 
 # GCS Variables
 BUCKET = "chi-traffic-de-bucket"
@@ -37,8 +31,6 @@ with DAG(
     start_date=days_ago(1),
     catchup=False,
 ) as dag:
-
-    wait_for_fetch_dag = DummyOperator(task_id="wait_for_fetch_to_GCS_dag")
 
     for table_name, gcs_path in TABLES.items():
         load_data_to_bq = GCSToBigQueryOperator(
@@ -79,8 +71,7 @@ with DAG(
         )
 
         (
-            wait_for_fetch_dag
-            >> load_data_to_bq
+            load_data_to_bq
             >> add_partition_date_column
             >> update_partition_date
         )

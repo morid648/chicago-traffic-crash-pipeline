@@ -1,8 +1,5 @@
 import os
-import logging
-import json
 import requests
-import datetime as dt
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -11,7 +8,6 @@ from airflow.providers.google.cloud.transfers.local_to_gcs import (
     LocalFilesystemToGCSOperator,
 )
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
-from google.cloud import storage
 
 # GCS Variables
 BUCKET = "chi-traffic-de-bucket"
@@ -54,7 +50,6 @@ with DAG(
         fetch_data = PythonOperator(
             task_id=f"fetch_geojson_{dataset_name}",
             python_callable=fetch_geojson_dataset,
-            provide_context=True,
             op_kwargs={
                 "api_url": api_url,
                 "tmp_file_name": f"chi_boundaries_{dataset_name}_{PARTITION_DATE}",
